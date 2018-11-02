@@ -1,6 +1,6 @@
 {
   "name": "strawbees-app-packager",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "dependencies": {
     "archiver": "^3.0.0",
     "nwjs-builder": "^1.13.1",
