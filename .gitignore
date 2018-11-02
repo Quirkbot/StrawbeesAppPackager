@@ -1,0 +1,11 @@
+.DS_Store
+node_modules
+*.log
+.tmp-build
+.tmp-sketches
+
+/b
+build
+cache
+/app-temp
+package-lock.json
