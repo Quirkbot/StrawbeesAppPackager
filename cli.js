@@ -28,7 +28,7 @@ execute(async ({ exec }) => {
 	// moves the nwjs scripts and modify the package
 	await cpdir(COMMON_SCRIPTS_DIR, TEMP_DIR)
 	const tmpPkg = JSON.parse((await fs.readFile(path.resolve(TEMP_DIR, 'package.json'))).toString())
-	tmpPkg['node-main'] = '__main.js'
+	tmpPkg['node-main'] = '__node-main.js'
 	tmpPkg.inject_js_start = '__inject_js_start.js'
 	await fs.writeFile(path.resolve(TEMP_DIR, 'package.json'), JSON.stringify(tmpPkg, null, '\t'))
 
