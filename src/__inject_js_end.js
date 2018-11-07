@@ -2,5 +2,5 @@
 try {
 	require('./nwjs-scripts/inject_js_end')
 } catch (e) {
-	console.log('Local nwjs-scripts/inject_js_end.js not present')
+	console.log('Error loading nwjs-scripts/inject_js_end.js', e)
 }
