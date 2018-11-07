@@ -1,6 +1,6 @@
-const scripts = require('./nwjs-scripts')
-
-const init = async () => {
-	await scripts.inject_js_start()
-	await nw.process.mainModule.exports.init()
+// import local inject_js_start
+try {
+	require('./nwjs-scripts/inject_js_start')
+} catch (e) {
+	console.log('Local nwjs-scripts/inject_js_start.js not present')
 }

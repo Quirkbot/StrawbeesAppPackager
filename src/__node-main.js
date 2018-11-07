@@ -1,3 +1,16 @@
+// import local node-main
+try {
+	require('./nwjs-scripts/node-main')
+} catch (e) {
+	console.log('Local nwjs-scripts/node-main.js not present')
+}
+
+// Graceful shutdown, kind of
+process.on('SIGQUIT', () => process.exit())
+process.on('SIGHUP', () => process.exit())
+process.on('SIGINT', () => process.exit()) // catch ctrl-c
+process.on('SIGTERM', () => process.exit()) // catch kill
+
 const path = require('path')
 const httpServer = require('http')
 const httpsServer = require('https')
@@ -5,8 +18,6 @@ const os = require('os')
 const fs = require('fs').promises
 const childProcess = require('child_process')
 const pkg = require('./package.json')
-const scripts = require('./nwjs-scripts')
-
 
 const autoupdate = async () => {
 	/* eslint-disable no-console */
@@ -125,20 +136,7 @@ const autoupdate = async () => {
 
 	// Quit the app
 	console.log('AUTOUPDATE: Quitting app...')
-	window.nw.App.quit()
+	nw.App.quit()
 	/* eslint-enable no-console */
 }
-
-exports.init = async () => {
-	// Graceful shutdown, kind of
-	process.on('SIGQUIT', () => process.exit())
-	process.on('SIGHUP', () => process.exit())
-	process.on('SIGINT', () => process.exit()) // catch ctrl-c
-	process.on('SIGTERM', () => process.exit()) // catch kill
-
-	// run the app's main script
-	await scripts.main()
-
-	// autoupdate
-	autoupdate()
-}
+autoupdate()
