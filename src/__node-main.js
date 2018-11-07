@@ -2,7 +2,7 @@
 try {
 	require('./nwjs-scripts/node-main')
 } catch (e) {
-	console.log('Local nwjs-scripts/node-main.js not present')
+	console.log('Error loading nwjs-scripts/node-main.js', e)
 }
 
 // Graceful shutdown, kind of
