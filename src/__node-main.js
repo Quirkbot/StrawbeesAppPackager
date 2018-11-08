@@ -32,11 +32,11 @@ const autoupdate = async () => {
 	const restart = async () => {
 		// Copy the update binary to the update dir
 		console.log(`AUTOUPDATE: Moving updater binary to ${path.resolve(UPDATES_DIR, UPDATER_BIN_NAME)}`)
-		await fs.copyFile(
+		await fs.promises.copyFile(
 			path.resolve(UPDATER_BIN_NAME),
 			path.resolve(UPDATES_DIR, UPDATER_BIN_NAME)
 		)
-		await fs.chmod(
+		await fs.promises.chmod(
 			path.resolve(UPDATES_DIR, UPDATER_BIN_NAME),
 			755 & ~process.umask()
 		)
@@ -137,16 +137,24 @@ const autoupdate = async () => {
 	console.log('AUTOUPDATE: Displaying notification to user...')
 	await new Promise((resolve, reject) => {
 		const options = {
-			icon               : 'nwjs-assets/icon.png',
-			body               : 'Click here to install update',
-			requireInteraction : true
+			icon : 'nwjs-assets/icon.png',
+			body : 'Click here to install update',
+			// requireInteraction : true
 		}
 		const notification = new Notification('A new update is available!', options)
+		const timer = setTimeout(() => {
+			notification.close()
+			reject(new Error('AUTOUPDATE: Notification timed out'))
+		}, 5000)
 		notification.onclick = () => {
 			notification.close()
+			clearTimeout(timer)
 			resolve()
 		}
-		notification.onclose = () => reject(new Error('User closed the update notification.'))
+		notification.onclose = () => {
+			clearTimeout(timer)
+			reject(new Error('AUTOUPDATE: User closed the notification.'))
+		}
 	})
 
 	// Restart
