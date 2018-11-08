@@ -66,6 +66,21 @@ execute(async ({ exec }) => {
 			}
 		)
 	})
+	// NWB transforms realtive symlinks into absolute ones, which totally breaks
+	// the application when you run it from another machine. So for now, we will
+	// just manually fix those symlinks
+	if (process.platform === 'darwin') {
+		await exec(`
+			cd "$(find . -name "nwjs Framework.framework")"
+			rm "Versions/Current" && ln -s "./A" "./Versions/Current"
+			rm "Helpers" && ln -s "./Versions/Current/Helpers"
+			rm "Internet Plug-Ins" && ln -s "./Versions/Current/Internet Plug-Ins"
+			rm "Libraries" && ln -s "./Versions/Current/Libraries"
+			rm "nwjs Framework" && ln -s "./Versions/Current/nwjs Framework"
+			rm "Resources" && ln -s "./Versions/Current/Resources"
+			rm "XPCServices" && ln -s "./Versions/Current/XPCServices"
+		`)
+	}
 
 	// package the app
 	const packageForOs = {}

@@ -1,6 +1,6 @@
 {
   "name": "strawbees-app-packager",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "dependencies": {
     "archiver": "^3.0.0",
     "nwjs-builder": "^1.13.1",
@@ -19,8 +19,8 @@
   "optionalDependencies": {
     "appdmg": "^0.5.2"
   },
-  "scripts" : {
-      "deploy" : "git checkout master && git push && git push --tags && git checkout develop && git push && yarn publish"
+  "scripts": {
+    "deploy": "git checkout master && git push && git push --tags && git checkout develop && git push && yarn publish"
   },
   "bin": {
     "strawbees-app-packager": "./cli.js"
