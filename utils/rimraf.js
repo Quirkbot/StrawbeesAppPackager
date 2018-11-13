@@ -6,7 +6,7 @@ const rimraf = async dirPath => {
 		await fs.access(dirPath)
 		const dirStat = await fs.lstat(dirPath)
 		if (!dirStat.isDirectory()) {
-			await fs.unlink(dirStat)
+			await fs.unlink(dirPath)
 			return
 		}
 		const list = await fs.readdir(dirPath)
@@ -19,7 +19,7 @@ const rimraf = async dirPath => {
 				await fs.unlink(entryPath)
 			}
 		}))
-		await fs.rimraf(dirPath)
+		await fs.rmdir(dirPath)
 	} catch (e) {}
 }
 
