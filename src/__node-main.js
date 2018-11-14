@@ -75,7 +75,7 @@ const autoupdate = async () => {
 
 	// Download manifest
 	console.log(`AUTOUPDATE: Downloading manifest from: ${UPDATES_MANIFEST_URL}...`)
-	const manifest = await (await fetch(UPDATES_MANIFEST_URL)).json()
+	const manifest = await (await fetch(`${UPDATES_MANIFEST_URL}?${Date.now()}`)).json()
 	if (manifest.version === pkg.version) {
 		throw new Error('App is up to date!')
 	}
