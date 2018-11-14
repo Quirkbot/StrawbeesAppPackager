@@ -41,7 +41,7 @@ execute(async ({ exec }) => {
 	)
 
 	// install src npm dependencies
-	await exec(`yarn --no-optional --production --cwd ${TEMP_DIR}`)
+	await exec(`npm --no-optional --production --prefix ${TEMP_DIR}`)
 
 	// build the app
 	// retrive the app package
