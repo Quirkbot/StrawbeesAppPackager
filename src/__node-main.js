@@ -79,7 +79,7 @@ const autoupdate = async () => {
 	const manifest = await (await fetch(`${UPDATES_MANIFEST_URL}?${Date.now()}`)).json()
 	console.log('AUTOUPDATE: Manifest version - ', manifest.version)
 	console.log('AUTOUPDATE: Package version - ', pkg.version)
-	if (compareVersions(pkg.version, manifest.version)) {
+	if (compareVersions(pkg.version, manifest.version) >= 0) {
 		throw new Error('App is up to date!')
 	}
 	console.log('AUTOUPDATE: Update manifest', manifest)
