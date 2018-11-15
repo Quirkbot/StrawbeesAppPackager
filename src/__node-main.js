@@ -17,6 +17,7 @@ const httpsServer = require('https')
 const os = require('os')
 const fs = require('fs')
 const childProcess = require('child_process')
+const compareVersions = require('./__compareVersions')
 const pkg = require('./package.json')
 
 const autoupdate = async () => {
@@ -76,7 +77,9 @@ const autoupdate = async () => {
 	// Download manifest
 	console.log(`AUTOUPDATE: Downloading manifest from: ${UPDATES_MANIFEST_URL}...`)
 	const manifest = await (await fetch(`${UPDATES_MANIFEST_URL}?${Date.now()}`)).json()
-	if (manifest.version === pkg.version) {
+	console.log('AUTOUPDATE: Manifest version - ', manifest.version)
+	console.log('AUTOUPDATE: Package version - ', pkg.version)
+	if (compareVersions(pkg.version, manifest.version)) {
 		throw new Error('App is up to date!')
 	}
 	console.log('AUTOUPDATE: Update manifest', manifest)
