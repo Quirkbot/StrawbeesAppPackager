@@ -37,6 +37,12 @@ Section
   # create the uninstaller
   WriteUninstaller "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
 
+  # add uninstall information to Add/Remove Programs
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                   "DisplayName" "{{APP_NAME}}"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                   "UninstallString" "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
+
   # create shortcuts in the start menu and on the desktop
   CreateShortCut "$SMPROGRAMS\\{{APP_NAME}}.lnk" "$INSTDIR\\{{APP_NAME}}.exe"
   CreateShortCut "$SMPROGRAMS\\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
@@ -49,6 +55,9 @@ Section "Uninstall"
 
   # delete the installed files
   RMDir /r $INSTDIR
+
+  # remove uninstall information from Add/Remove Programs
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}"
 
   # delete the shortcuts
   Delete "$SMPROGRAMS\\{{APP_NAME}}.lnk"

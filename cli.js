@@ -55,8 +55,9 @@ execute(async ({ exec }) => {
 				outputName     : 'app',
 				executableName : appPkg['executable-name'],
 				sideBySide     : true,
-				winIco         : path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico'),
 				macIcns        : path.resolve(PLATFORM_ASSETS_DIR, 'icon.icns')
+				// Disavbled windows icon, see manaul resourcehacker call below
+				// winIco         : path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico'),
 			},
 			error => {
 				if (error) {
@@ -66,6 +67,20 @@ execute(async ({ exec }) => {
 			}
 		)
 	})
+	// NWB calls ResourceHacker internally (by using the node-resourcehacker
+	// module). But as this module hasn't been updated to the new command line
+	// arguments of ResourceHacker.exe, we will call the binary directly from
+	// here. It's hacky, but works
+	if (process.platform === 'win32') {
+		await exec(
+			`${require.resolve('node-resourcehacker/ResourceHacker.exe')} ` +
+			`-open ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
+			`-save ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
+			'-action addoverwrite ' +
+			`-res ${path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico')} ` +
+			'-mask ICONGROUP, IDR_MAINFRAME'
+		)
+	}
 	// NWB transforms realtive symlinks into absolute ones, which totally breaks
 	// the application when you run it from another machine. So for now, we will
 	// just manually fix those symlinks
