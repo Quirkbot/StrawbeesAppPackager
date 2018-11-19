@@ -41,7 +41,7 @@ execute(async ({ exec }) => {
 	)
 
 	// install src npm dependencies
-	await exec(`cd ${TEMP_DIR} && npm install --no-optional --production`)
+	await exec(`cd ${TEMP_DIR} && npm install --production`)
 
 	// build the app
 	// retrive the app package
