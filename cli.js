@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const NWB = require('nwjs-builder')
+const NWB = require('strawbees-nwjs-builder')
 const path = require('path')
 const fs = require('fs').promises
 const cpdir = require('./utils/cpdir')
