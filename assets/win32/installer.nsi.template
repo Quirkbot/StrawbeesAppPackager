@@ -38,7 +38,7 @@ Section
   WriteUninstaller "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
 
   # create shortcuts in the start menu and on the desktop
-  CreateShortCut "$SMPROGRAMS\\{{APP_NAME}}.lnk" "$InstallDir\\{{APP_NAME}}.exe"
+  CreateShortCut "$SMPROGRAMS\\{{APP_NAME}}.lnk" "$INSTDIR\\{{APP_NAME}}.exe"
   CreateShortCut "$SMPROGRAMS\\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
   CreateShortCut "$DESKTOP\\{{APP_NAME}}.lnk" "$INSTDIR\\{{APP_NAME}}.exe"
 
