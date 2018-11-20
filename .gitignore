@@ -3,7 +3,7 @@ node_modules
 *.log
 .tmp-build
 .tmp-sketches
-
+/rh
 /b
 build
 cache

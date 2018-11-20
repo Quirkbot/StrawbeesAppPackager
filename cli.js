@@ -3,10 +3,12 @@ const NWB = require('nwjs-builder')
 const path = require('path')
 const fs = require('fs').promises
 const cpdir = require('./utils/cpdir')
-const rimraf = require('./utils/rimraf')
-const zipdir = require('./utils/zipdir')
+const download = require('./utils/download')
 const execute = require('./utils/execute')
 const modulePath = require('./utils/modulePath')
+const rimraf = require('./utils/rimraf')
+const unzip = require('./utils/unzip')
+const zipdir = require('./utils/zipdir')
 
 const [,, ...cmdargs] = process.argv
 const SRC_DIR = path.resolve(cmdargs[0] || 'src')
@@ -70,11 +72,23 @@ execute(async ({ exec }) => {
 	})
 	// NWB calls ResourceHacker internally (by using the node-resourcehacker
 	// module). But as this module hasn't been updated to the new command line
-	// arguments of ResourceHacker.exe, we will call the binary directly from
-	// here. It's hacky, but works
+	// arguments of ResourceHacker.exe, we will download our own binary and call
+	// it manually
 	if (process.platform === 'win32') {
+		// download and unzinp Resource Hacker
+		await rimraf(path.resolve(__dirname, 'rh'))
+		await fs.mkdir(path.resolve(__dirname, 'rh'))
+		await download(
+			process.env.RESOURCE_HACKER_URL || 'http://www.angusj.com/resourcehacker/resource_hacker.zip',
+			path.resolve(__dirname, 'rh', 'rh.zip')
+		)
+		await unzip(
+			path.resolve(__dirname, 'rh', 'rh.zip'),
+			path.resolve(__dirname, 'rh')
+		)
+		// change the exe icon
 		await exec(
-			`${modulePath('node-resourcehacker')}\\ResourceHacker.exe ` +
+			`${path.resolve(__dirname, 'rh', 'ResourceHacker.exe')} ` +
 			`-open ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
 			`-save ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
 			'-action addoverwrite ' +
@@ -115,6 +129,16 @@ execute(async ({ exec }) => {
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions'))
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform))
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version))
+
+		// Change the icon of the installer
+		await exec(
+			`${path.resolve(__dirname, 'rh', 'ResourceHacker.exe')} ` +
+			`-open ${path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`)} ` +
+			`-save ${path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`)} ` +
+			'-action addoverwrite ' +
+			`-res ${path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico')} ` +
+			'-mask ICONGROUP, IDR_MAINFRAME'
+		)
 
 		// Move the installer
 		await fs.rename(
