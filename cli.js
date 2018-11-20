@@ -6,6 +6,7 @@ const cpdir = require('./utils/cpdir')
 const rimraf = require('./utils/rimraf')
 const zipdir = require('./utils/zipdir')
 const execute = require('./utils/execute')
+const modulePath = require('./utils/modulePath')
 
 const [,, ...cmdargs] = process.argv
 const SRC_DIR = path.resolve(cmdargs[0] || 'src')
@@ -73,7 +74,7 @@ execute(async ({ exec }) => {
 	// here. It's hacky, but works
 	if (process.platform === 'win32') {
 		await exec(
-			`${require.resolve('node-resourcehacker/ResourceHacker.exe')} ` +
+			`${modulePath('node-resourcehacker')}\\ResourceHacker.exe ` +
 			`-open ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
 			`-save ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
 			'-action addoverwrite ' +
