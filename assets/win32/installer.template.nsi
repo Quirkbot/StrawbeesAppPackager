@@ -1,4 +1,6 @@
 !include "MUI2.nsh"
+!include "WinMessages.nsh"
+!include "LogicLib.nsh"
 
 Name "{{APP_NAME}}"
 BrandingText "strawbees.com"
@@ -24,6 +26,8 @@ InstallDir "$PROGRAMFILES\\{{APP_NAME}}\\"
 
 # default section start
 Section
+  # kill any instance of the app
+  ExecWait `taskkill /f /im "{{APP_NAME}}.exe" /t`
 
   # delete the installed files
   RMDir /r $INSTDIR
@@ -31,8 +35,25 @@ Section
   # define the path to which the installer should install
   SetOutPath $INSTDIR
 
-  # specify the files to go in the output path
+  # copy the app files to the output path
   File /r "{{RELATIVE_BUILD_PATH}}\\app\\*"
+
+  # install the drivers
+  ${If} ${AtMostWin8.1}
+      ${if} ${RunningX64}
+          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+          DetailPrint "Uninstall: $1"
+          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /sw' $1
+      ${Else}
+          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+          DetailPrint "Uninstall: $1"
+          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /sw' $1
+      ${EndIf}
+      DetailPrint "Installation: $1"
+      ${If} $1 <= 0
+          MessageBox MB_OK "Driver installation failed. Please try again."
+      ${EndIf}
+  ${EndIf}
 
   # create the uninstaller
   WriteUninstaller "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
