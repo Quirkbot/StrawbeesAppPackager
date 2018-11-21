@@ -1,25 +1,28 @@
 !include "MUI2.nsh"
 !include "WinMessages.nsh"
 !include "LogicLib.nsh"
+!include "WinVer.nsh"
+!include "x64.nsh"
 
 Name "{{APP_NAME}}"
 BrandingText "strawbees.com"
 
 # set the icon
 !define MUI_ICON "icon.ico"
+!define MUI_UNICON "icon.ico"
 
 # define the resulting installer's name:
-OutFile "{{RELATIVE_BUILD_PATH}}\\{{APP_NAME}} Installer.exe"
+OutFile "{{RELATIVE_BUILD_PATH}}\{{APP_NAME}} Installer.exe"
 
 # set the installation directory
-InstallDir "$PROGRAMFILES\\{{APP_NAME}}\\"
+InstallDir "$PROGRAMFILES\{{APP_NAME}}\"
 
 # app dialogs
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_INSTFILES
 
 !define MUI_FINISHPAGE_RUN_TEXT "Start {{APP_NAME}}"
-!define MUI_FINISHPAGE_RUN "$INSTDIR\\{{APP_NAME}}.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\{{APP_NAME}}.exe"
 
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_LANGUAGE "English"
@@ -36,7 +39,7 @@ Section
   SetOutPath $INSTDIR
 
   # copy the app files to the output path
-  File /r "{{RELATIVE_BUILD_PATH}}\\app\\*"
+  File /r "{{RELATIVE_BUILD_PATH}}\app\*"
 
   # install the drivers
   ${If} ${AtMostWin8.1}
@@ -56,18 +59,18 @@ Section
   ${EndIf}
 
   # create the uninstaller
-  WriteUninstaller "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
+  WriteUninstaller "$INSTDIR\Uninstall {{APP_NAME}}.exe"
 
   # add uninstall information to Add/Remove Programs
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
                    "DisplayName" "{{APP_NAME}}"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-                   "UninstallString" "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
+                   "UninstallString" "$INSTDIR\Uninstall {{APP_NAME}}.exe"
 
   # create shortcuts in the start menu and on the desktop
-  CreateShortCut "$SMPROGRAMS\\{{APP_NAME}}.lnk" "$INSTDIR\\{{APP_NAME}}.exe"
-  CreateShortCut "$SMPROGRAMS\\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\\Uninstall {{APP_NAME}}.exe"
-  CreateShortCut "$DESKTOP\\{{APP_NAME}}.lnk" "$INSTDIR\\{{APP_NAME}}.exe"
+  CreateShortCut "$SMPROGRAMS\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_NAME}}.exe"
+  CreateShortCut "$SMPROGRAMS\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\Uninstall {{APP_NAME}}.exe"
+  CreateShortCut "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_NAME}}.exe"
 
 SectionEnd
 
@@ -81,8 +84,8 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}"
 
   # delete the shortcuts
-  Delete "$SMPROGRAMS\\{{APP_NAME}}.lnk"
-  Delete "$SMPROGRAMS\\Uninstall {{APP_NAME}}.lnk"
-  Delete "$DESKTOP\\{{APP_NAME}}.lnk"
+  Delete "$SMPROGRAMS\{{APP_NAME}}.lnk"
+  Delete "$SMPROGRAMS\Uninstall {{APP_NAME}}.lnk"
+  Delete "$DESKTOP\{{APP_NAME}}.lnk"
 
 SectionEnd

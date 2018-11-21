@@ -87,11 +87,11 @@ execute(async ({ exec }) => {
 		)
 		// change the exe icon
 		await exec(
-			`${path.resolve(__dirname, 'rh', 'ResourceHacker.exe')} ` +
-			`-open ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
-			`-save ${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)} ` +
+			`"${path.resolve(__dirname, 'rh', 'ResourceHacker.exe')}" ` +
+			`-open "${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)}" ` +
+			`-save "${path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.exe`)}" ` +
 			'-action addoverwrite ' +
-			`-res ${path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico')} ` +
+			`-res "${path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico')}" ` +
 			'-mask ICONGROUP, IDR_MAINFRAME'
 		)
 	}
@@ -128,16 +128,6 @@ execute(async ({ exec }) => {
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions'))
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform))
 		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version))
-
-		// Change the icon of the installer
-		await exec(
-			`${path.resolve(__dirname, 'rh', 'ResourceHacker.exe')} ` +
-			`-open ${path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`)} ` +
-			`-save ${path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`)} ` +
-			'-action addoverwrite ' +
-			`-res ${path.resolve(PLATFORM_ASSETS_DIR, 'icon.ico')} ` +
-			'-mask ICONGROUP, IDR_MAINFRAME'
-		)
 
 		// Move the installer
 		await fs.rename(
