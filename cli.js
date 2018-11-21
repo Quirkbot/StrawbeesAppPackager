@@ -5,7 +5,6 @@ const fs = require('fs').promises
 const cpdir = require('./utils/cpdir')
 const download = require('./utils/download')
 const execute = require('./utils/execute')
-const modulePath = require('./utils/modulePath')
 const rimraf = require('./utils/rimraf')
 const unzip = require('./utils/unzip')
 const zipdir = require('./utils/zipdir')
@@ -117,7 +116,7 @@ execute(async ({ exec }) => {
 	// windows packager
 	packageForOs.win32 = async () => {
 		// Create the NSIS file from the template
-		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.nsi.template'))).toString()
+		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.template.nsi'))).toString()
 			.split('{{APP_NAME}}').join(appPkg['executable-name'])
 			.split('{{RELATIVE_BUILD_PATH}}').join(path.relative(PLATFORM_ASSETS_DIR, BUILD_DIR))
 		await fs.writeFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.nsi'), template)
