@@ -114,7 +114,7 @@ execute(async ({ exec }) => {
 	// package the app
 	const packageForOs = {}
 	// Base file name based on platform and arch
-	const basePackageDir = path.resolve(basePackageDir)
+	const basePackageDir = path.resolve(BUILD_DIR, 'versions', process.platform, process.arch, appPkg.version)
 	const basePackageFilename = `${appPkg['executable-name']}-${process.platform}-${process.arch}-${appPkg.version}`
 	// windows packager
 	packageForOs.win32 = async () => {
