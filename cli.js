@@ -113,6 +113,9 @@ execute(async ({ exec }) => {
 
 	// package the app
 	const packageForOs = {}
+	// Base file name based on platform and arch
+	const basePackageDir = path.resolve(basePackageDir)
+	const basePackageFilename = `${appPkg['executable-name']}-${process.platform}-${process.arch}-${appPkg.version}`
 	// windows packager
 	packageForOs.win32 = async () => {
 		// Create the NSIS file from the template
@@ -125,35 +128,33 @@ execute(async ({ exec }) => {
 		await exec(`makensis.exe /V4 ${PLATFORM_ASSETS_DIR}\\installer.nsi`)
 
 		// Create the out directory
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions'))
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform))
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version))
+		await fs.mkdir(path.resolve(basePackageDir), { recursive : true })
 
 		// Move the installer
 		await fs.rename(
 			path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`),
-			path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version, `${appPkg['executable-name']}-${process.platform}-${appPkg.version}-installer.exe`)
+			path.resolve(basePackageDir, `${basePackageFilename}-installer.exe`)
 		)
 
 		// Zip the source
 		await zipdir(
 			path.resolve(BUILD_DIR, 'app'),
-			path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version, `${appPkg['executable-name']}-${process.platform}-${appPkg.version}-src.zip`),
+			path.resolve(basePackageDir, `${basePackageFilename}-src.zip`),
 			''
 		)
 
 		// Create the latest manifest
 		await fs.writeFile(
-			path.resolve(BUILD_DIR, 'versions', process.platform, 'latest.json'),
+			path.resolve(BUILD_DIR, 'versions', process.platform, process.arch, 'latest.json'),
 			JSON.stringify({
 				name      : appPkg.name,
 				version   : appPkg.version,
 				createdAt : new Date(),
 				installer : {
-					path : `${appPkg.version}/${appPkg['executable-name']}-${process.platform}-${appPkg.version}-installer.exe`
+					path : `${appPkg.version}/${basePackageFilename}-installer.exe`
 				},
 				src : {
-					path : `${appPkg.version}/${appPkg['executable-name']}-${process.platform}-${appPkg.version}-src.zip`
+					path : `${appPkg.version}/${basePackageFilename}-src.zip`
 				}
 			})
 		)
@@ -162,13 +163,14 @@ execute(async ({ exec }) => {
 	// mac packager
 	packageForOs.darwin = async () => {
 		// Create the out directory
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions'))
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform))
-		await fs.mkdir(path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version))
+		await fs.mkdir(
+			path.resolve(basePackageDir),
+			{ recursive : true }
+		)
 		// Zip the source
 		await zipdir(
 			path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.app`),
-			path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version, `${appPkg['executable-name']}-${process.platform}-${appPkg.version}-src.zip`),
+			path.resolve(basePackageDir, `${basePackageFilename}-src.zip`),
 			`${appPkg['executable-name']}.app`
 		)
 		// Create the DMG config
@@ -182,7 +184,7 @@ execute(async ({ exec }) => {
 			const appdmg = require('appdmg')
 			const dmg = appdmg({
 				source : `${PLATFORM_ASSETS_DIR}/dmg.json`,
-				target : path.resolve(BUILD_DIR, 'versions', process.platform, appPkg.version, `${appPkg['executable-name']}-${process.platform}-${appPkg.version}-installer.dmg`)
+				target : path.resolve(basePackageDir, `${basePackageFilename}-installer.dmg`)
 			})
 			dmg.on('finish', resolve)
 			dmg.on('error', reject)
@@ -190,16 +192,16 @@ execute(async ({ exec }) => {
 
 		// Create the latest manifest
 		await fs.writeFile(
-			path.resolve(BUILD_DIR, 'versions', process.platform, 'latest.json'),
+			path.resolve(BUILD_DIR, 'versions', process.platform, process.arch, 'latest.json'),
 			JSON.stringify({
 				name      : appPkg.name,
 				version   : appPkg.version,
 				createdAt : new Date(),
 				installer : {
-					path : `${appPkg.version}/${appPkg['executable-name']}-${process.platform}-${appPkg.version}-installer.dmg`
+					path : `${appPkg.version}/${basePackageFilename}-installer.dmg`
 				},
 				src : {
-					path : `${appPkg.version}/${appPkg['executable-name']}-${process.platform}-${appPkg.version}-src.zip`
+					path : `${appPkg.version}/${basePackageFilename}-src.zip`
 				}
 			})
 		)

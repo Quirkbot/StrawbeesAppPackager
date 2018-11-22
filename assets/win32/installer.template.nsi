@@ -31,6 +31,7 @@ InstallDir "$PROGRAMFILES\{{APP_NAME}}\"
 Section
   # kill any instance of the app
   ExecWait `taskkill /f /im "{{APP_NAME}}.exe" /t`
+  Sleep 5000
 
   # delete the installed files
   RMDir /r $INSTDIR
