@@ -15,7 +15,7 @@ BrandingText "strawbees.com"
 OutFile "{{RELATIVE_BUILD_PATH}}\{{APP_NAME}} Installer.exe"
 
 # set the installation directory
-InstallDir "$PROGRAMFILES\{{APP_NAME}}\"
+InstallDir "$APPDATA\{{APP_NAME}}\"
 
 # app dialogs
 !insertmacro MUI_PAGE_WELCOME
