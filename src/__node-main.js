@@ -25,7 +25,7 @@ const autoupdate = async () => {
 	if (process.platform === 'linux') {
 		throw new Error('Linux does not support auto update')
 	}
-	const UPDATES_MANIFEST_URL = `${pkg.autoupdate}/${process.platform}/latest.json`
+	const UPDATES_MANIFEST_URL = `${pkg.autoupdate}/${process.platform}/${process.arch}/latest.json`
 	const UPDATES_DIR = path.resolve(os.tmpdir(), pkg['executable-name'])
 	const UPDATER_BIN_NAME = /^win/.test(process.platform) ? 'updater.exe' : 'updater'
 
