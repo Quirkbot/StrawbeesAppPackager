@@ -97,7 +97,7 @@ const autoupdate = async () => {
 
 	const sourceTempDest = path.resolve(UPDATES_DIR, '.update.zip')
 	const sourceFinalDest = path.resolve(UPDATES_DIR, `${manifest.version}.zip`)
-	const sourceUrl = `${pkg.autoupdate}/${process.platform}/${manifest.src.path}`
+	const sourceUrl = `${pkg.autoupdate}/${process.platform}/${process.arch}/${manifest.src.path}`
 
 	// ... check if already src alaready exists
 	try {
@@ -141,10 +141,10 @@ const autoupdate = async () => {
 	await new Promise((resolve, reject) => {
 		const options = {
 			icon : 'nwjs-assets/icon.png',
-			body : 'Click here to install update',
+			body : 'Click here to restart',
 			// requireInteraction : true
 		}
-		const notification = new Notification('A new update is available!', options)
+		const notification = new Notification('Update installed!, ', options)
 		const timer = setTimeout(() => {
 			notification.close()
 			reject(new Error('AUTOUPDATE: Notification timed out'))
