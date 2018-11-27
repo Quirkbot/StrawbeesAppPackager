@@ -4,6 +4,8 @@
 !include "WinVer.nsh"
 !include "x64.nsh"
 
+RequestExecutionLevel user
+
 Name "{{APP_NAME}}"
 BrandingText "strawbees.com"
 
