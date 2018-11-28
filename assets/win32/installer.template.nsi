@@ -1,10 +1,11 @@
+!include "FileFunc.nsh"
+!include "LogicLib.nsh"
 !include "MUI2.nsh"
 !include "WinMessages.nsh"
-!include "LogicLib.nsh"
 !include "WinVer.nsh"
 !include "x64.nsh"
 
-RequestExecutionLevel user
+RequestExecutionLevel admin
 
 Name "{{APP_NAME}}"
 BrandingText "strawbees.com"
@@ -62,17 +63,37 @@ Section
   ${EndIf}
 
   # create the uninstaller
-  WriteUninstaller "$INSTDIR\Uninstall {{APP_NAME}}.exe"
+  WriteUninstaller "$INSTDIR\uninstall.exe"
 
   # add uninstall information to Add/Remove Programs
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-                   "DisplayName" "{{APP_NAME}}"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-                   "UninstallString" "$INSTDIR\Uninstall {{APP_NAME}}.exe"
+  WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                     "DisplayName" "{{APP_NAME}}"
+  WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                     "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                     "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\""
+  ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
+  IntFmt $0 "0x%08X" $0
+  WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
+                     "EstimatedSize" "$0"
+
+  # register the app url scheme
+  DetailPrint "Register {{APP_URL_SCHEME}} URI Handler"
+  DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}" "" "URL:{{APP_URL_SCHEME}}"
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}" "{{APP_NAME}} URL Protocol" ""
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}\DefaultIcon" "" "$INSTDIR\{{APP_NAME}}.exe"
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell" "" ""
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open" "" ""
+  WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open\command" "" "$INSTDIR\{{APP_NAME}}.exe %1"
 
   # create shortcuts in the start menu and on the desktop
-  CreateShortCut "$SMPROGRAMS\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_NAME}}.exe"
-  CreateShortCut "$SMPROGRAMS\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\Uninstall {{APP_NAME}}.exe"
+  Delete "$SMPROGRAMS\{{APP_NAME}}.lnk"
+  Delete "$SMPROGRAMS\Uninstall {{APP_NAME}}.lnk"
+  Delete "$DESKTOP\{{APP_NAME}}.lnk"
+  CreateDirectory "$SMPROGRAMS\{{APP_NAME}}"
+  CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_NAME}}.exe"
+  CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\Uninstall {{APP_NAME}}.lnk" "$INSTDIR\uninstall.exe"
   CreateShortCut "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_NAME}}.exe"
 
 SectionEnd
@@ -80,15 +101,18 @@ SectionEnd
 # create a section to define what the uninstaller does
 Section "Uninstall"
 
-  # delete the installed files
-  RMDir /r $INSTDIR
-
   # remove uninstall information from Add/Remove Programs
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}"
+  DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}"
+
+  # register the app url scheme
+  DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
 
   # delete the shortcuts
-  Delete "$SMPROGRAMS\{{APP_NAME}}.lnk"
-  Delete "$SMPROGRAMS\Uninstall {{APP_NAME}}.lnk"
+  Delete "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"
+  Delete "$SMPROGRAMS\{{APP_NAME}}\Uninstall {{APP_NAME}}.lnk"
   Delete "$DESKTOP\{{APP_NAME}}.lnk"
+
+  # delete the installed files
+  RMDir /r $INSTDIR
 
 SectionEnd

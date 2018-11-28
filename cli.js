@@ -69,11 +69,11 @@ execute(async ({ exec }) => {
 			}
 		)
 	})
-	// NWB calls ResourceHacker internally (by using the node-resourcehacker
-	// module). But as this module hasn't been updated to the new command line
-	// arguments of ResourceHacker.exe, we will download our own binary and call
-	// it manually
 	if (process.platform === 'win32') {
+		// NWB calls ResourceHacker internally (by using the node-resourcehacker
+		// module). But as this module hasn't been updated to the new command line
+		// arguments of ResourceHacker.exe, we will download our own binary and call
+		// it manually
 		// download and unzinp Resource Hacker
 		await rimraf(path.resolve(__dirname, 'rh'))
 		await fs.mkdir(path.resolve(__dirname, 'rh'))
@@ -95,10 +95,10 @@ execute(async ({ exec }) => {
 			'-mask ICONGROUP, IDR_MAINFRAME'
 		)
 	}
-	// NWB transforms realtive symlinks into absolute ones, which totally breaks
-	// the application when you run it from another machine. So for now, we will
-	// just manually fix those symlinks
 	if (process.platform === 'darwin') {
+		// NWB transforms realtive symlinks into absolute ones, which totally breaks
+		// the application when you run it from another machine. So for now, we will
+		// just manually fix those symlinks
 		await exec(`
 			cd "$(find . -name "nwjs Framework.framework")"
 			rm "Versions/Current" && ln -s "./A" "./Versions/Current"
@@ -109,6 +109,15 @@ execute(async ({ exec }) => {
 			rm "Resources" && ln -s "./Versions/Current/Resources"
 			rm "XPCServices" && ln -s "./Versions/Current/XPCServices"
 		`)
+		// Register the app url scheme, by modifying the Info.plist
+		const plist = require('plist')
+		const plistPath = path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.app`, 'Info.plist')
+		const plistObject = plist.parse((await fs.readFile(plistPath, 'utf8')).toString())
+		plistObject.CFBundleURLTypes.push({
+			CFBundleURLName    : `${appPkg['executable-name']} URL`,
+			CFBundleURLSchemes : [appPkg['url-scheme']]
+		})
+		await fs.writeFile(plistPath, plist.build(plistObject))
 	}
 
 	// package the app
@@ -121,6 +130,7 @@ execute(async ({ exec }) => {
 		// Create the NSIS file from the template
 		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.template.nsi'))).toString()
 			.split('{{APP_NAME}}').join(appPkg['executable-name'])
+			.split('{{APP_URL_SCHEME}}').join(appPkg['url-scheme'])
 			.split('{{RELATIVE_BUILD_PATH}}').join(path.relative(PLATFORM_ASSETS_DIR, BUILD_DIR))
 		await fs.writeFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.nsi'), template)
 
