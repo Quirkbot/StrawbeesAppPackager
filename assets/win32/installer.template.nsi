@@ -5,7 +5,7 @@
 !include "WinVer.nsh"
 !include "x64.nsh"
 
-RequestExecutionLevel admin
+RequestExecutionLevel user
 
 Name "{{APP_NAME}}"
 BrandingText "strawbees.com"
@@ -34,7 +34,7 @@ InstallDir "$APPDATA\{{APP_NAME}}\"
 Section
   # kill any instance of the app
   ExecWait `taskkill /f /im "{{APP_NAME}}.exe" /t`
-  Sleep 5000
+  Sleep 4000
 
   # delete the installed files
   RMDir /r $INSTDIR
@@ -48,18 +48,19 @@ Section
   # install the drivers
   ${If} ${AtMostWin8.1}
       ${if} ${RunningX64}
-          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
-          DetailPrint "Uninstall: $1"
+          # ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+          # DetailPrint "Uninstall: $1"
           ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /sw' $1
       ${Else}
-          ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
-          DetailPrint "Uninstall: $1"
+          # ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+          # DetailPrint "Uninstall: $1"
           ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /sw' $1
       ${EndIf}
       DetailPrint "Installation: $1"
       ${If} $1 <= 0
           MessageBox MB_OK "Driver installation failed. Please try again."
       ${EndIf}
+      Sleep 1000
   ${EndIf}
 
   # create the uninstaller
