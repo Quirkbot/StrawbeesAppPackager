@@ -111,7 +111,7 @@ execute(async ({ exec }) => {
 		`)
 		// Register the app url scheme, by modifying the Info.plist
 		const plist = require('plist')
-		const plistPath = path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.app`, 'Info.plist')
+		const plistPath = path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.app`, 'Contents', 'Info.plist')
 		const plistObject = plist.parse((await fs.readFile(plistPath, 'utf8')).toString())
 		plistObject.CFBundleURLTypes.push({
 			CFBundleURLName    : `${appPkg['executable-name']} URL`,
