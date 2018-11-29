@@ -229,4 +229,4 @@ execute(async ({ exec }) => {
 
 	// clear temp dir
 	await rimraf(TEMP_DIR)
-})
+}).catch((error) => throw error)
