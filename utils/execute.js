@@ -36,15 +36,10 @@ const run = (script, cmd, opt = {}, promise) => {
 	return new Promise(resolve => fn(resolve))
 }
 module.exports = async fn => {
-	try {
-		await fn({
-			exec      : (cmd, opt) => run(exec, cmd, opt, true),
-			execAsync : (cmd, opt) => run(exec, cmd, opt),
-			fork      : (cmd, opt) => run(fork, cmd, opt, true),
-			forkAsync : (cmd, opt) => run(fork, cmd, opt)
-		})
-	} catch (error) {
-		// eslint-disable-next-line no-console
-		console.log(error)
-	}
+	await fn({
+		exec      : (cmd, opt) => run(exec, cmd, opt, true),
+		execAsync : (cmd, opt) => run(exec, cmd, opt),
+		fork      : (cmd, opt) => run(fork, cmd, opt, true),
+		forkAsync : (cmd, opt) => run(fork, cmd, opt)
+	})
 }
