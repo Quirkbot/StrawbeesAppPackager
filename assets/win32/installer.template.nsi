@@ -15,10 +15,10 @@ BrandingText "{{APP_PUBLISHER}}"
 !define MUI_UNICON "icon.ico"
 
 # define the resulting installer's name:
-OutFile "{{RELATIVE_BUILD_PATH}}\{{APP_EXECUTABLE_NAME}}-installer.exe"
+OutFile '"{{RELATIVE_BUILD_PATH}}\{{APP_EXECUTABLE_NAME}}-installer.exe"'
 
 # set the installation directory
-InstallDir "$APPDATA\{{APP_NAME}}\"
+InstallDir '"$APPDATA\{{APP_NAME}}\"'
 
 # app dialogs
 !insertmacro MUI_PAGE_WELCOME
@@ -43,7 +43,7 @@ Section
     SetOutPath $INSTDIR
 
     # copy the app files to the output path
-    File /r "{{RELATIVE_BUILD_PATH}}\app\*"
+    File /r '"{{RELATIVE_BUILD_PATH}}\app\*"'
 
     # install the drivers
     ${If} ${AtMostWin8.1}
@@ -64,7 +64,7 @@ Section
     ${EndIf}
 
     # create the uninstaller
-    WriteUninstaller "$INSTDIR\uninstall.exe"
+    WriteUninstaller '"$INSTDIR\uninstall.exe"'
 
     # add uninstall information to Add/Remove Programs
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
@@ -72,13 +72,13 @@ Section
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
         "Publisher" "{{APP_PUBLISHER}}"
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-        "DisplayIcon" "$\"$INSTDIR\nwjs-assets\win32\icon.ico$\""
+        "DisplayIcon" '"$INSTDIR\nwjs-assets\win32\icon.ico"'
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
         "DisplayVersion" "{{APP_VERSION}}"
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-        "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+        "UninstallString" '"$INSTDIR\uninstall.exe"'
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-        "QuietUninstallString" "$\"$INSTDIR\uninstall.exe$\""
+        "QuietUninstallString" '"$INSTDIR\uninstall.exe"'
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
     WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
@@ -88,22 +88,22 @@ Section
     DetailPrint "Register {{APP_URL_SCHEME}} URI Handler"
     DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
     WriteRegStr HKCU "{{APP_URL_SCHEME}}" "" "URL:{{APP_URL_SCHEME}}"
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}" "{{APP_NAME}} URL Protocol" ""
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\DefaultIcon" "" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
+    WriteRegStr HKCU "{{APP_URL_SCHEME}}" '"{{APP_NAME}} URL Protocol"' ""
+    WriteRegStr HKCU "{{APP_URL_SCHEME}}\DefaultIcon" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
     WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell" "" ""
     WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open" "" ""
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open\command" "" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe %1"
+    WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open\command" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe" %1'
 
     # create shortcuts in the start menu and on the desktop
     DetailPrint "Creating shortcuts"
-    Delete "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"
-    Delete "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk"
-    Delete "$SMPROGRAMS\{{APP_NAME}}"
-    Delete "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
-    CreateDirectory "$SMPROGRAMS\{{APP_NAME}}"
-    CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
-    CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk" "$INSTDIR\uninstall.exe"
-    CreateShortCut "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
+    Delete '"$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"'
+    Delete '"$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk"'
+    Delete '"$SMPROGRAMS\{{APP_NAME}}"'
+    Delete '"$DESKTOP\{{APP_NAME}}.lnk"'
+    CreateDirectory '"$SMPROGRAMS\{{APP_NAME}}"'
+    CreateShortCut '"$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"' '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
+    CreateShortCut '"$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk"' '"$INSTDIR\uninstall.exe"'
+    CreateShortCut '"$DESKTOP\{{APP_NAME}}.lnk"' '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
 
 SectionEnd
 
@@ -117,10 +117,10 @@ Section "Uninstall"
     DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
 
     # delete the shortcuts
-    Delete "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"
-    Delete "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk"
-    Delete "$SMPROGRAMS\{{APP_NAME}}"
-    Delete "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
+    Delete '"$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"'
+    Delete '"$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk"'
+    Delete '"$SMPROGRAMS\{{APP_NAME}}"'
+    Delete '"$DESKTOP\{{APP_NAME}}.lnk"'
 
     # delete the installed files
     RMDir /r $INSTDIR
