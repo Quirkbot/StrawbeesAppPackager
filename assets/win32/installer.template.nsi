@@ -90,12 +90,13 @@ Section
     # HKCU Software\Classes\ does the trick)
     DetailPrint "Register {{APP_URL_SCHEME}} URI Handler"
     DeleteRegKey HKCU "Software\Classes\{{APP_URL_SCHEME}}"
-    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" "" "URL:{{APP_URL_SCHEME}}"
-    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" '"{{APP_NAME}} URL Protocol"' ""
-    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\DefaultIcon" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" "" ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" "URL Protocol" ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\DefaultIcon" "" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe,0"
     WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell" "" ""
-    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\Open" "" ""
-    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\Open\command" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe" %1'
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\open" "" ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\open\command" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe" "%1"'
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\open\ddeexec" "" ""
 
     # create shortcuts in the start menu and on the desktop
     DetailPrint "Creating shortcuts"
