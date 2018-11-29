@@ -86,13 +86,13 @@ Section
 
     # register the app url scheme
     DetailPrint "Register {{APP_URL_SCHEME}} URI Handler"
-    DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}" "" "URL:{{APP_URL_SCHEME}}"
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}" '"{{APP_NAME}} URL Protocol"' ""
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\DefaultIcon" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell" "" ""
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open" "" ""
-    WriteRegStr HKCU "{{APP_URL_SCHEME}}\shell\Open\command" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe" %1'
+    DeleteRegKey HKCU "Software\Classes\{{APP_URL_SCHEME}}"
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" "" "URL:{{APP_URL_SCHEME}}"
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}" '"{{APP_NAME}} URL Protocol"' ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\DefaultIcon" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"'
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell" "" ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\Open" "" ""
+    WriteRegStr HKCU "Software\Classes\{{APP_URL_SCHEME}}\shell\Open\command" "" '"$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe" %1'
 
     # create shortcuts in the start menu and on the desktop
     DetailPrint "Creating shortcuts"
@@ -114,7 +114,7 @@ Section "Uninstall"
     DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}"
 
     # register the app url scheme
-    DeleteRegKey HKCU "{{APP_URL_SCHEME}}"
+    DeleteRegKey HKCU "Software\Classes\{{APP_URL_SCHEME}}"
 
     # delete the shortcuts
     Delete '"$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk"'
