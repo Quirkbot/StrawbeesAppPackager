@@ -13,7 +13,7 @@ const options = {
 	)
 }
 const run = (script, cmd, opt = {}, promise) => {
-	const fn = (cb) => {
+	const fn = (resolve, reject) => {
 		// eslint-disable-next-line no-console
 		console.log(`-> ${cmd}`)
 		const child = script(cmd, Object.assign({}, opt, options))
@@ -26,20 +26,22 @@ const run = (script, cmd, opt = {}, promise) => {
 		child.on('close', code => {
 			// eslint-disable-next-line no-console
 			console.log(`child process exited with code ${code}`)
-			cb(code)
+			if (code === 0) {
+				resolve()
+			} else {
+				reject(code)
+			}
 		})
 		return child
 	}
 	if (!promise) {
-		return fn(() => {})
+		return fn(() => {}, () => {})
 	}
-	return new Promise(resolve => fn(resolve))
+	return new Promise((resolve, reject) => fn(resolve, reject))
 }
-module.exports = async fn => {
-	await fn({
-		exec      : (cmd, opt) => run(exec, cmd, opt, true),
-		execAsync : (cmd, opt) => run(exec, cmd, opt),
-		fork      : (cmd, opt) => run(fork, cmd, opt, true),
-		forkAsync : (cmd, opt) => run(fork, cmd, opt)
-	})
-}
+module.exports = async fn => fn({
+	exec      : (cmd, opt) => run(exec, cmd, opt, true),
+	execAsync : (cmd, opt) => run(exec, cmd, opt),
+	fork      : (cmd, opt) => run(fork, cmd, opt, true),
+	forkAsync : (cmd, opt) => run(fork, cmd, opt)
+})
