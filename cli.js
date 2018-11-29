@@ -110,6 +110,7 @@ execute(async ({ exec }) => {
 			rm "XPCServices" && ln -s "./Versions/Current/XPCServices"
 		`)
 		// Register the app url scheme, by modifying the Info.plist
+		// eslint-disable-next-line global-require,import/no-extraneous-dependencies
 		const plist = require('plist')
 		const plistPath = path.resolve(BUILD_DIR, 'app', `${appPkg['executable-name']}.app`, 'Contents', 'Info.plist')
 		const plistObject = plist.parse((await fs.readFile(plistPath, 'utf8')).toString())
@@ -145,7 +146,7 @@ execute(async ({ exec }) => {
 
 		// Move the installer
 		await fs.rename(
-			path.resolve(BUILD_DIR, `${appPkg['executable-name']} Installer.exe`),
+			path.resolve(BUILD_DIR, `${appPkg['executable-name']}-installer.exe`),
 			path.resolve(basePackageDir, `${basePackageFilename}-installer.exe`)
 		)
 

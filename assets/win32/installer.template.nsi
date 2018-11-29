@@ -15,7 +15,7 @@ BrandingText "{{APP_PUBLISHER}}"
 !define MUI_UNICON "icon.ico"
 
 # define the resulting installer's name:
-OutFile "{{RELATIVE_BUILD_PATH}}\{{APP_NAME}} Installer.exe"
+OutFile "{{RELATIVE_BUILD_PATH}}\{{APP_EXECUTABLE_NAME}}-installer.exe"
 
 # set the installation directory
 InstallDir "$APPDATA\{{APP_NAME}}\"
