@@ -130,7 +130,7 @@ execute(async ({ exec }) => {
 	packageForOs.win32 = async () => {
 		// Create the NSIS file from the template
 		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'installer.template.nsi'))).toString()
-			.split('{{APP_NAME}}').join(appPkg.name)
+			.split('{{APP_NAME}}').join(appPkg['display-name'])
 			.split('{{APP_EXECUTABLE_NAME}}').join(appPkg['executable-name'])
 			.split('{{APP_VERSION}}').join(appPkg.version)
 			.split('{{APP_PUBLISHER}}').join(appPkg.publisher)
@@ -161,7 +161,7 @@ execute(async ({ exec }) => {
 		await fs.writeFile(
 			path.resolve(BUILD_DIR, 'versions', process.platform, process.arch, 'latest.json'),
 			JSON.stringify({
-				name      : appPkg.name,
+				name      : appPkg['display-name'],
 				version   : appPkg.version,
 				createdAt : new Date(),
 				installer : {
@@ -189,7 +189,7 @@ execute(async ({ exec }) => {
 		)
 		// Create the DMG config
 		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'dmg.json.template'))).toString()
-			.split('{{APP_NAME}}').join(appPkg.name)
+			.split('{{APP_NAME}}').join(appPkg['display-name'])
 			.split('{{APP_EXECUTABLE_NAME}}').join(appPkg['executable-name'])
 			.split('{{APP_VERSION}}').join(appPkg.version)
 			.split('{{APP_PUBLISHER}}').join(appPkg.publisher)
@@ -212,7 +212,7 @@ execute(async ({ exec }) => {
 		await fs.writeFile(
 			path.resolve(BUILD_DIR, 'versions', process.platform, process.arch, 'latest.json'),
 			JSON.stringify({
-				name      : appPkg.name,
+				name      : appPkg['display-name'],
 				version   : appPkg.version,
 				createdAt : new Date(),
 				installer : {
