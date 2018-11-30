@@ -6,6 +6,7 @@
 !include "x64.nsh"
 
 RequestExecutionLevel user
+ManifestDPIAware true
 
 Name "{{APP_NAME}} {{APP_VERSION}}"
 BrandingText "{{APP_PUBLISHER}}"
@@ -56,15 +57,10 @@ Section
             # DetailPrint "Uninstall: $1"
             ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /sw' $1
         ${EndIf}
-            DetailPrint "Installation: $1"
-        ${If} $1 <= 0
-            MessageBox MB_OK "Driver installation failed. Please try again."
-            Sleep 1000
-        ${EndIf}
     ${EndIf}
 
     # create the uninstaller
-    WriteUninstaller "$INSTDIR\uninstall.exe"
+    WriteUninstaller "$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"
 
     # add uninstall information to Add/Remove Programs
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
@@ -76,9 +72,9 @@ Section
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
         "DisplayVersion" "{{APP_VERSION}}"
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-        "UninstallString" '"$INSTDIR\uninstall.exe"'
+        "UninstallString" '"$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"'
     WriteRegStr   HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
-        "QuietUninstallString" '"$INSTDIR\uninstall.exe"'
+        "QuietUninstallString" '"$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"'
     ${GetSize} "$INSTDIR" "/S=0K" $0 $1 $2
     IntFmt $0 "0x%08X" $0
     WriteRegDWORD HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_NAME}}" \
@@ -106,7 +102,7 @@ Section
     Delete "$DESKTOP\{{APP_NAME}}.lnk"
     CreateDirectory "$SMPROGRAMS\{{APP_NAME}}"
     CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
-    CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk" "$INSTDIR\uninstall.exe"
+    CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk" "$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"
     CreateShortCut "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
 
 SectionEnd
