@@ -16,7 +16,7 @@ const TEMP_DIR = path.resolve(cmdargs[2] || '.tmp')
 const COMMON_SCRIPTS_DIR = path.resolve(__dirname, 'src')
 const PLATFORM_ASSETS_DIR = path.resolve(TEMP_DIR, 'nwjs-assets', process.platform)
 const COMMON_PLATFORM_ASSETS_DIR = path.resolve(__dirname, 'assets', process.platform)
-const UPDATER_BIN_NAME = `updater-${process.arch}${/^win/.test(process.platform) ? '.exe' : ''}`
+const UPDATER_BIN_NAME = `autoupdater-${process.arch}${/^win/.test(process.platform) ? '.exe' : ''}`
 
 execute(async ({ exec }) => {
 	// clean slate
