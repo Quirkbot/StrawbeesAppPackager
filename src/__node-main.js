@@ -27,7 +27,7 @@ const autoupdate = async () => {
 	}
 	const UPDATES_MANIFEST_URL = `${pkg.autoupdate}/${process.platform}/${process.arch}/latest.json`
 	const UPDATES_DIR = path.resolve(os.tmpdir(), pkg['executable-name'])
-	const UPDATER_BIN_NAME = /^win/.test(process.platform) ? 'updater.exe' : 'updater'
+	const UPDATER_BIN_NAME = `updater-${process.arch}${/^win/.test(process.platform) ? '.exe' : ''}`
 
 	// create restart rotine
 	const restart = async () => {
@@ -144,7 +144,7 @@ const autoupdate = async () => {
 			body : 'Click here to restart',
 			// requireInteraction : true
 		}
-		const notification = new Notification('Update installed!, ', options)
+		const notification = new Notification('Update ready to install', options)
 		const timer = setTimeout(() => {
 			notification.close()
 			reject(new Error('AUTOUPDATE: Notification timed out'))
