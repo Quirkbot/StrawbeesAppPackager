@@ -27,7 +27,7 @@ const autoupdate = async () => {
 	}
 	const UPDATES_MANIFEST_URL = `${pkg.autoupdate}/${process.platform}/${process.arch}/latest.json`
 	const UPDATES_DIR = path.resolve(os.tmpdir(), pkg['executable-name'])
-	const UPDATER_BIN_NAME = `updater-${process.arch}${/^win/.test(process.platform) ? '.exe' : ''}`
+	const UPDATER_BIN_NAME = `autoupdater-${process.arch}${/^win/.test(process.platform) ? '.exe' : ''}`
 
 	// create restart rotine
 	const restart = async () => {
