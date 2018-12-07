@@ -61,7 +61,7 @@ const autoupdate = async () => {
 				'--app-name', pkg['executable-name']
 			],
 			{
-				cwd      : path.dirname(UPDATES_DIR),
+				cwd      : UPDATES_DIR,
 				detached : true,
 				stdio    : 'ignore',
 			}
