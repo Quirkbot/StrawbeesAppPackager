@@ -58,7 +58,8 @@ const autoupdate = async () => {
 			[
 				'--bundle', path.resolve(UPDATES_DIR, `${manifest.version}.zip`),
 				'--inst-dir', instDir,
-				'--app-name', pkg['executable-name']
+				'--app-name', pkg['executable-name'],
+				'--wait', process.pid
 			],
 			{
 				cwd      : UPDATES_DIR,
