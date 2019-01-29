@@ -190,7 +190,7 @@ execute(async ({ exec }) => {
 		)
 		// Create the DMG config
 		const template = (await fs.readFile(path.resolve(PLATFORM_ASSETS_DIR, 'dmg.json.template'))).toString()
-			.split('{{APP_NAME}}').join(appPkg['display-name'])
+			.split('{{APP_NAME}}').join(appPkg['display-name'].substring(0, 27))
 			.split('{{APP_EXECUTABLE_NAME}}').join(appPkg['executable-name'])
 			.split('{{APP_VERSION}}').join(appPkg.version)
 			.split('{{APP_PUBLISHER}}').join(appPkg.publisher)
