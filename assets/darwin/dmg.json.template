@@ -1,5 +1,5 @@
 {
-	"title": "{{APP_NAME}} Instalation",
+	"title": "{{APP_NAME}}",
 	"icon": "icon.icns",
 	"icon-size": 128,
 	"background": "dmg-bg.png",
