@@ -33,7 +33,7 @@ InstallDir "$APPDATA\{{APP_NAME}}\"
 
 # default section start
 Section
-    # kill any instance of the app
+	# kill any instance of the app
     ExecWait 'taskkill /f /im "{{APP_EXECUTABLE_NAME}}.exe" /t'
     Sleep 4000
 
@@ -45,20 +45,26 @@ Section
 
     # copy the app files to the output path
     File /r "{{RELATIVE_BUILD_PATH}}\app\*"
+	
+	ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\RequireAdmin.exe"' $0
+	DetailPrint "Check UAC: $0"
+	
+	${If} $0 == 0
+		# install the drivers
+		${If} ${AtMostWin8.1}
+			${if} ${RunningX64}
+				# ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+				# DetailPrint "Uninstall: $1"
+				ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe"' $1
+			${Else}
+				# ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
+				# DetailPrint "Uninstall: $1"
+				ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe"' $1
+			${EndIf}
+		${EndIf}
+	${EndIf}
 
-    # install the drivers
-    ${If} ${AtMostWin8.1}
-        ${if} ${RunningX64}
-            # ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
-            # DetailPrint "Uninstall: $1"
-            ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-amd64.exe" /sw' $1
-        ${Else}
-            # ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /u nwjs-assets\win32\drivers\old1000\quirkbot.inf /S' $1
-            # DetailPrint "Uninstall: $1"
-            ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\dpinst-x86.exe" /sw' $1
-        ${EndIf}
-    ${EndIf}
-
+	
     # create the uninstaller
     WriteUninstaller "$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"
 
@@ -105,6 +111,7 @@ Section
     CreateShortCut "$SMPROGRAMS\{{APP_NAME}}\uninstall.lnk" "$INSTDIR\uninstall-{{APP_EXECUTABLE_NAME}}.exe"
     CreateShortCut "$DESKTOP\{{APP_NAME}}.lnk" "$INSTDIR\{{APP_EXECUTABLE_NAME}}.exe"
 
+	# ExecWait '"$INSTDIR\nwjs-assets\win32\drivers\wizard-driver.exe"'
 SectionEnd
 
 # create a section to define what the uninstaller does
